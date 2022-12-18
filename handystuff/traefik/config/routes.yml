@@ -63,9 +63,24 @@ http:
         - web-secure
       tls:
         certResolver: certResolver
+      middlewares:
+        - vocadb-notification-reader-cors
 
   middlewares:
     web-secure-redirect:
       redirectScheme:
         scheme: https
         permanent: true
+    vocadb-notification-reader-cors:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - POST
+          - DELETE
+          - PUT
+        accessControlAllowOriginList:
+          - https://api.vocadb-notification-reader.handystuff.net
+          - https://vocadb-notification-reader.handystuff.net
+        accessControlMaxAge: 100
+        addVaryHeader: true
