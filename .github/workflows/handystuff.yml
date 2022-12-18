@@ -36,32 +36,32 @@ jobs:
         run: |
           ssh $REMOTE "docker network create traefik || true"
           ssh $REMOTE "mkdir -p deploy/traefik"
-          rsync --recursive --ignore-existing --delete traefik/ $REMOTE:~/deploy/traefik
+          rsync --recursive --delete traefik/ $REMOTE:~/deploy/traefik
           ssh $REMOTE "cd ~/deploy/traefik && docker compose pull && docker compose up -d --remove-orphans"
 
       - name: Deploy Watchtower
         run: |
           ssh $REMOTE "mkdir -p deploy/watchtower"
-          rsync --recursive --ignore-existing --delete watchtower/ $REMOTE:~/deploy/watchtower
+          rsync --recursive --delete watchtower/ $REMOTE:~/deploy/watchtower
           ssh $REMOTE "cd ~/deploy/watchtower && docker compose pull && docker compose up -d --remove-orphans"
 
       - name: Deploy Portainer
         run: |
           ssh $REMOTE "mkdir -p deploy/portainer"
-          rsync --recursive --ignore-existing --delete portainer/ $REMOTE:~/deploy/portainer
+          rsync --recursive --delete portainer/ $REMOTE:~/deploy/portainer
           ssh $REMOTE "cd ~/deploy/portainer && docker compose pull && docker compose up -d --remove-orphans"
 
       - name: Deploy NGINX
         run: |
           ssh $REMOTE "mkdir -p deploy/nginx deploy/nginx/config deploy/nginx/html"
-          rsync --recursive --ignore-existing --delete nginx/config/ $REMOTE:~/deploy/nginx/config
+          rsync --recursive --delete nginx/config/ $REMOTE:~/deploy/nginx/config
           rsync nginx/compose.yml $REMOTE:~/deploy/nginx/compose.yml
           ssh $REMOTE "cd ~/deploy/nginx && docker compose pull && docker compose up -d --remove-orphans && docker restart nginx"
 
       - name: Deploy Apps
         run: |
           ssh $REMOTE "mkdir -p deploy/apps deploy/apps/config"
-          rsync --recursive --ignore-existing --delete apps/ $REMOTE:~/deploy/apps
+          rsync --recursive --delete apps/ $REMOTE:~/deploy/apps
           ssh $REMOTE "cd ~/deploy/apps && docker compose pull && docker compose up -d --remove-orphans"
 
 #      - name: Deploy Wireguard
