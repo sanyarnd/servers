@@ -1,0 +1,71 @@
+http:
+  routers:
+    # Dashboard
+    dashboard-web:
+      service: api@internal
+      rule: Host(`traefik.handystuff.net`)
+      entryPoints:
+        - web
+      middlewares:
+        - web-secure-redirect
+    dashboard-web-secure:
+      service: api@internal
+      rule: Host(`traefik.handystuff.net`)
+      entryPoints:
+        - web-secure
+      tls:
+        certResolver: certResolver
+
+    # Portainer
+    portainer-web:
+      service: portainer@docker
+      rule: Host(`portainer.handystuff.net`)
+      entryPoints:
+        - web
+      middlewares:
+        - web-secure-redirect
+    portainer-web-secure:
+      service: portainer@docker
+      rule: Host(`portainer.handystuff.net`)
+      entryPoints:
+        - web-secure
+      tls:
+        certResolver: certResolver
+
+    # NGINX
+    nginx-web:
+      service: nginx@docker
+      rule: Host(`vocadb-notification-reader.handystuff.net`) || Host(`niconico-tagger.handystuff.net`)
+      entryPoints:
+        - web
+      middlewares:
+        - web-secure-redirect
+    nginx-web-secure:
+      service: nginx@docker
+      rule: Host(`vocadb-notification-reader.handystuff.net`) || Host(`niconico-tagger.handystuff.net`)
+      entryPoints:
+        - web-secure
+      tls:
+        certResolver: certResolver
+
+    # VocaDB Notification Reader
+    vocadb-notification-reader-web:
+      service: vocadb-notification-reader@docker
+      rule: Host(`api.vocadb-notification-reader.handystuff.net`)
+      entryPoints:
+        - web
+      middlewares:
+        - web-secure-redirect
+    vocadb-notification-reader-web-secure:
+      service: vocadb-notification-reader@docker
+      rule: Host(`api.vocadb-notification-reader.handystuff.net`)
+      entryPoints:
+        - web-secure
+      tls:
+        certResolver: certResolver
+
+  middlewares:
+    web-secure-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true

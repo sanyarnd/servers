@@ -1,0 +1,22 @@
+services:
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+      traefik.enable: true
+      traefik.http.routers.portainer.service: portainer
+      traefik.http.services.portainer.loadbalancer.server.port: 9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - data:/data
+    networks:
+      - traefik
+
+volumes:
+  data:
+
+networks:
+  traefik:
+    external: true
