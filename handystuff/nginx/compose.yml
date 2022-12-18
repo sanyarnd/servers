@@ -1,5 +1,5 @@
 services:
-  ui:
+  nginx:
     image: nginx
     container_name: nginx
     restart: unless-stopped

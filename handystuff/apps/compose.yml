@@ -1,5 +1,5 @@
 services:
-  api:
+  vocadb-notification-reader:
     image: ghcr.io/sanyarnd/vocadb-notification-reader
     container_name: vocadb-notification-reader
     restart: unless-stopped
@@ -8,6 +8,18 @@ services:
       traefik.enable: true
       traefik.http.routers.vocadb-notification-reader.service: vocadb-notification-reader
       traefik.http.services.vocadb-notification-reader.loadbalancer.server.port: 8080
+    networks:
+      - traefik
+
+  niconicotagger:
+    image: ghcr.io/kateabr/niconicotagger
+    container_name: niconicotagger
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+      traefik.enable: true
+      traefik.http.routers.niconicotagger.service: niconicotagger
+      traefik.http.services.niconicotagger.loadbalancer.server.port: 8080
     networks:
       - traefik
 

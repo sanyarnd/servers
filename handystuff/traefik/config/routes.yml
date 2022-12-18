@@ -35,14 +35,14 @@ http:
     # NGINX
     nginx-web:
       service: nginx@docker
-      rule: Host(`vocadb-notification-reader.handystuff.net`) || Host(`niconico-tagger.handystuff.net`)
+      rule: Host(`vocadb-notification-reader.handystuff.net`) || Host(`niconicotagger.handystuff.net`)
       entryPoints:
         - web
       middlewares:
         - web-secure-redirect
     nginx-web-secure:
       service: nginx@docker
-      rule: Host(`vocadb-notification-reader.handystuff.net`) || Host(`niconico-tagger.handystuff.net`)
+      rule: Host(`vocadb-notification-reader.handystuff.net`) || Host(`niconicotagger.handystuff.net`)
       entryPoints:
         - web-secure
       tls:
@@ -66,6 +66,24 @@ http:
       middlewares:
         - vocadb-notification-reader-cors
 
+    # NicoNico Tagger
+    niconicotagger-web:
+      service: niconicotagger@docker
+      rule: Host(`api.niconicotagger.handystuff.net`)
+      entryPoints:
+        - web
+      middlewares:
+        - web-secure-redirect
+    niconicotagger-web-secure:
+      service: niconicotagger@docker
+      rule: Host(`api.niconicotagger.handystuff.net`)
+      entryPoints:
+        - web-secure
+      tls:
+        certResolver: certResolver
+      middlewares:
+        - niconicotagger-cors
+
   middlewares:
     web-secure-redirect:
       redirectScheme:
@@ -79,5 +97,15 @@ http:
         accessControlAllowOriginList:
           - https://api.vocadb-notification-reader.handystuff.net
           - https://vocadb-notification-reader.handystuff.net
+        accessControlMaxAge: 600
+        addVaryHeader: true
+    niconicotagger-cors:
+      headers:
+        accessControlAllowCredentials: true
+        accessControlAllowMethods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ]
+        accessControlAllowHeaders: [ "Accept", "Authorization", "Content-Type", "Origin" ]
+        accessControlAllowOriginList:
+          - https://api.niconicotagger.handystuff.net
+          - https://niconicotagger.handystuff.net
         accessControlMaxAge: 600
         addVaryHeader: true
