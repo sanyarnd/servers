@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy
     if: github.ref_name == 'master'
+    defaults:
+      run:
+        working-directory: handystuff
 
     steps:
       - uses: actions/checkout@v3
