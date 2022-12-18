@@ -37,35 +37,35 @@ jobs:
           ssh $REMOTE "docker network create traefik || true"
           ssh $REMOTE "mkdir -p deploy/traefik"
           rsync --recursive --ignore-existing --delete traefik/ $REMOTE:~/deploy/traefik
-          ssh $REMOTE "docker compose up --file ~/deploy/traefik/compose.yml -d"
+          ssh $REMOTE "docker compose pull && docker compose --file ~/deploy/traefik/compose.yml up -d --remove-orphans"
 
       - name: Deploy Watchtower
         run: |
           ssh $REMOTE "mkdir -p deploy/watchtower"
           rsync --recursive --ignore-existing --delete watchtower/ $REMOTE:~/deploy/watchtower
-          ssh $REMOTE "docker compose up --file ~/deploy/watchtower/compose.yml -d"
+          ssh $REMOTE "docker compose pull && docker compose --file ~/deploy/watchtower/compose.yml up -d --remove-orphans"
 
       - name: Deploy Portainer
         run: |
           ssh $REMOTE "mkdir -p deploy/portainer"
           rsync --recursive --ignore-existing --delete portainer/ $REMOTE:~/deploy/portainer
-          ssh $REMOTE "docker compose up --file ~/deploy/portainer/compose.yml -d"
+          ssh $REMOTE "docker compose pull && docker compose --file ~/deploy/portainer/compose.yml up -d --remove-orphans"
 
       - name: Deploy NGINX
         run: |
           ssh $REMOTE "mkdir -p deploy/nginx deploy/nginx/config deploy/nginx/html"
           rsync --recursive --ignore-existing --delete nginx/config/ $REMOTE:~/deploy/nginx/config
           rsync nginx/compose.yml $REMOTE:~/deploy/nginx/compose.yml
-          ssh $REMOTE "docker compose up --file ~/deploy/nginx/compose.yml -d"
+          ssh $REMOTE "docker compose pull && docker compose --file ~/deploy/nginx/compose.yml up -d --remove-orphans"
 
       - name: Deploy Apps
         run: |
           ssh $REMOTE "mkdir -p deploy/apps deploy/apps/config"
           rsync --recursive --ignore-existing --delete apps/ $REMOTE:~/deploy/apps
-          ssh $REMOTE "docker compose up --file ~/deploy/apps/compose.yml -d"
+          ssh $REMOTE "docker compose pull && docker compose --file ~/deploy/apps/compose.yml up -d --remove-orphans"
 
 #      - name: Deploy Wireguard
 #        run: |
 #          ssh $REMOTE "mkdir -p deploy/wireguard deploy/wireguard/config"
 #          rsync wireguard/compose.yml $REMOTE:~/deploy/wireguard/compose.yml
-#          ssh $REMOTE "docker compose up --file ~/deploy/wireguard/compose.yml -d"
+#          ssh $REMOTE "docker compose pull && docker compose --file ~/deploy/wireguard/compose.yml up -d --remove-orphans"
