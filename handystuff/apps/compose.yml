@@ -3,8 +3,6 @@ services:
     image: ghcr.io/sanyarnd/vocadb-notification-reader
     container_name: vocadb-notification-reader
     restart: unless-stopped
-    ports:
-      - 8080:8080
     labels:
       com.centurylinklabs.watchtower.enable: true
       traefik.enable: true
