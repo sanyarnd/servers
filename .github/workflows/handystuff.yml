@@ -56,7 +56,7 @@ jobs:
           ssh $REMOTE "mkdir -p deploy/nginx deploy/nginx/config deploy/nginx/html"
           rsync --recursive --ignore-existing --delete nginx/config/ $REMOTE:~/deploy/nginx/config
           rsync nginx/compose.yml $REMOTE:~/deploy/nginx/compose.yml
-          ssh $REMOTE "cd ~/deploy/nginx && docker compose pull && docker compose up -d --remove-orphans"
+          ssh $REMOTE "cd ~/deploy/nginx && docker compose pull && docker compose up -d --remove-orphans && docker restart nginx"
 
       - name: Deploy Apps
         run: |
