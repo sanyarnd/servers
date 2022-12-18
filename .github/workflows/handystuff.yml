@@ -17,6 +17,8 @@ jobs:
     if: github.ref_name == 'master'
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: Configure SSH
         run: |
           mkdir ~/.ssh
