@@ -1,0 +1,33 @@
+---
+- name: Configure docker network
+  hosts: handystuff.net
+  remote_user: containers
+  tasks:
+    - name: Create network
+      ansible.builtin.shell:
+        cmd: "docker network create traefik || true"
+
+- name: Configure docker apps
+  hosts: handystuff.net
+  remote_user: containers
+  vars:
+    host: handystuff.net
+  roles:
+    - role: compose-app
+      vars:
+        app: watchtower
+    - role: compose-app
+      vars:
+        app: wireguard
+    - role: compose-app
+      vars:
+        app: traefik
+    - role: compose-app
+      vars:
+        app: nginx
+    - role: compose-app
+      vars:
+        app: niconicotagger
+    - role: compose-app
+      vars:
+        app: vocadb-notification-reader

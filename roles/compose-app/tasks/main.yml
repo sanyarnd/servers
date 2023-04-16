@@ -1,0 +1,27 @@
+---
+
+- name: Register whoami
+  shell: whoami
+  register: whoami
+
+- name: Fetch user $HOME directory
+  ansible.builtin.user:
+    name: "{{ whoami.stdout }}"
+    state: present
+  register: user_info
+  check_mode: true
+
+- name: Copy compose files [{{ app }}]
+  copy:
+    src:  "{{ playbook_dir }}/files/{{ host }}/{{ app }}/"
+    dest: "{{ user_info.home }}/compose/{{ app }}"
+
+- name: Pull compose dependencies [{{ app }}]
+  ansible.builtin.shell:
+    cmd: "docker compose pull"
+    chdir: "{{ user_info.home }}/compose/{{ app }}"
+
+- name: Start compose [{{ app }}]
+  ansible.builtin.shell:
+    cmd: "docker compose up -d --remove-orphans"
+    chdir: "{{ user_info.home }}/compose/{{ app }}"

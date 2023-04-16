@@ -1,0 +1,6 @@
+---
+- name: Configure OS
+  become: true
+  roles:
+    - role: apt-upgrade
+    - role: docker

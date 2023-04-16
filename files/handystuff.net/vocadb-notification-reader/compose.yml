@@ -11,18 +11,6 @@ services:
     networks:
       - traefik
 
-  niconicotagger:
-    image: ghcr.io/kateabr/niconicotagger
-    container_name: niconicotagger
-    restart: unless-stopped
-    labels:
-      com.centurylinklabs.watchtower.enable: true
-      traefik.enable: true
-      traefik.http.routers.niconicotagger.service: niconicotagger
-      traefik.http.services.niconicotagger.loadbalancer.server.port: 8080
-    networks:
-      - traefik
-
 networks:
   traefik:
     external: true

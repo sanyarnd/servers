@@ -35,16 +35,14 @@ providers:
     filename: /etc/traefik/routes.yml
     watch: true
 
-accessLog: { }
-#  format: json
+accessLog:
+  format: json
 log:
   level: DEBUG
-#  format: json
-#metrics:
-#  prometheus:
-#    entryPoint: metrics
-#    addServicesLabels: true
-#    addEntryPointsLabels: true
-#tracing:
-#  serviceName: traefik
-#  jaeger: {}
+  format: json
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addServicesLabels: true
+    addEntryPointsLabels: true
