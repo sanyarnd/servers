@@ -1,0 +1,16 @@
+services:
+  wireguard:
+    image: teddysun/xray
+    container_name: xray
+    restart: unless-stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: true
+    ports:
+      - 9000:9000
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./config:/etc/xray
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1

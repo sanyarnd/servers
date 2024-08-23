@@ -21,6 +21,9 @@
         app: wireguard
     - role: compose-app
       vars:
+        app: xray
+    - role: compose-app
+      vars:
         app: traefik
     - role: compose-app
       vars:
