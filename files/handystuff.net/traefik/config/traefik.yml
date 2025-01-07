@@ -40,9 +40,3 @@ accessLog:
 log:
   level: DEBUG
   format: json
-
-metrics:
-  prometheus:
-    entryPoint: metrics
-    addServicesLabels: true
-    addEntryPointsLabels: true

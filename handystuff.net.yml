@@ -18,9 +18,6 @@
         app: watchtower
     - role: compose-app
       vars:
-        app: wireguard
-    - role: compose-app
-      vars:
         app: 3x-ui
     - role: compose-app
       vars:
