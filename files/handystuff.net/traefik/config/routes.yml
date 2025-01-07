@@ -16,17 +16,17 @@ http:
       tls:
         certResolver: certResolver
 
-    # Portainer
-    portainer-web:
-      service: portainer@docker
-      rule: Host(`portainer.handystuff.net`)
+    # 3x-ui
+    3x-ui-web:
+      service: 3x-ui@docker
+      rule: Host(`3x-ui.handystuff.net`)
       entryPoints:
         - web
       middlewares:
         - web-secure-redirect
-    portainer-web-secure:
-      service: portainer@docker
-      rule: Host(`portainer.handystuff.net`)
+    3x-ui-web-secure:
+      service: 3x-ui@docker
+      rule: Host(`3x-ui.handystuff.net`)
       entryPoints:
         - web-secure
       tls:
