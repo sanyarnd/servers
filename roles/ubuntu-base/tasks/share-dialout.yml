@@ -1,6 +1,5 @@
 ---
 - name: Add users to dialout group
-  become: true
   ansible.builtin.user:
     name: "{{ item }}"
     groups: "dialout"

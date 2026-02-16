@@ -1,12 +1,10 @@
 ---
 - name: Create group for data access
-  become: true
   ansible.builtin.group:
     name: "{{ mounts_access_group }}"
     state: present
 
 - name: Add users to media group
-  become: true
   ansible.builtin.user:
     name: "{{ item }}"
     groups: "{{ mounts_access_group }}"

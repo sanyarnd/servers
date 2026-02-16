@@ -1,31 +1,11 @@
 ---
-# --------------------------------------
-# base system
-# --------------------------------------
-dialout_users:
-  - alex
-  - ansible
+dialout_users: [ alex, ansible ]
+docker_services_users: [ alex, ansible ]
+mounts_users: [ alex, ansible ]
 
 # --------------------------------------
-# docker services settings
+# Disks
 # --------------------------------------
-docker_services_dir: "/opt/docker-services"
-docker_services_group: "docker-services"
-docker_services_users:
-  - alex
-  - ansible
-
-# --------------------------------------
-# fstab settings
-# --------------------------------------
-mounts_mergerfs_version: "2.41.1"
-mounts_fstab_path: "/etc/fstab"
-mounts_base_path: "/mnt"
-mounts_access_group: "media"
-mounts_users:
-  - alex
-  - ansible
-
 mounts_boot:
   - device: "/dev/disk/by-id/dm-uuid-LVM-BH8GE9gsgEvvg6oAOiwnwkpYqOv2cUdb4u7oMq6LKueF14N9cRpe0i9j81BnO2SZ"
     mount_point: "/"

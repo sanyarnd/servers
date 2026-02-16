@@ -1,12 +1,10 @@
 ---
 - name: Verify that boot drives are defined
-  become: true
   ansible.builtin.fail:
     msg: "You must define all the boot drives manually"
   when: mounts_boot is not defined or mounts_boot|length == 0
 
 - name: Push out the 'fstab' file
-  become: true
   ansible.builtin.template:
     dest: "{{ mounts_fstab_path }}"
     src: fstab.j2
@@ -15,7 +13,6 @@
     mode: "0644"
 
 - name: Create mount points for normal drives
-  become: true
   ansible.builtin.file:
     path: "{{ item.mount_point }}"
     state: directory
@@ -26,7 +23,6 @@
   when: mounts_normal is defined
 
 - name: Create mount points for drive pools
-  become: true
   ansible.builtin.file:
     path: "{{ item.mount_point }}"
     state: directory
@@ -37,16 +33,13 @@
   when: mounts_pooled is defined
 
 - name: Reload systemd to pick up changes to fstab
-  become: true
   ansible.builtin.systemd_service:
     daemon_reload: true
 
 - name: Mount drives
-  become: true
   ansible.builtin.command: mount -a -t nofuse.mergerfs
 
 - name: Mount pooled drives
-  become: true
   ansible.builtin.command: "mount --target {{ item.mount_point }}"
   loop: "{{ mounts_pooled }}"
   when: mounts_pooled is defined

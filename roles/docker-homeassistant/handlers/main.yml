@@ -1,0 +1,10 @@
+---
+- name: restart mosquitto
+  ansible.builtin.command:
+    cmd: docker compose restart mosquitto
+    chdir: "{{ docker_services_dir }}/{{ app_name }}"
+
+- name: restart homeassistant
+  ansible.builtin.command:
+    cmd: docker compose restart homeassistant
+    chdir: "{{ docker_services_dir }}/{{ app_name }}"

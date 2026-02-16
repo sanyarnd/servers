@@ -1,0 +1,5 @@
+---
+docker_services_dir: "/opt/docker-services"
+docker_services_group: "docker-services"
+# Users to add to docker and docker-services groups. Override in host_vars or group_vars.
+docker_services_users: []

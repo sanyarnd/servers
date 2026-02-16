@@ -1,0 +1,4 @@
+---
+# Same defaults as ubuntu-docker so app roles work without that role on the same host
+docker_services_dir: "/opt/docker-services"
+docker_services_group: "docker-services"

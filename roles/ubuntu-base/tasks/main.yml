@@ -1,5 +1,4 @@
 ---
-
 - name: install common packages
   import_tasks: common-packages.yml
 

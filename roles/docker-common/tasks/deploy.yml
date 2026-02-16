@@ -1,0 +1,36 @@
+---
+# Shared deploy flow for docker-compose app roles.
+# Caller must set: app_name, compose_src_path (e.g. "{{ role_path }}/files/compose.yml")
+- name: Ensure destination directory exists
+  ansible.builtin.file:
+    path: "{{ docker_services_dir }}/{{ app_name }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ docker_services_group }}"
+    mode: "0775"
+
+- name: Push out the compose file
+  ansible.builtin.copy:
+    src: "{{ compose_src_path }}"
+    dest: "{{ docker_services_dir }}/{{ app_name }}/compose.yml"
+    owner: "{{ ansible_user }}"
+    group: "{{ docker_services_group }}"
+    mode: "0664"
+
+- name: Pull images
+  ansible.builtin.command:
+    cmd: docker compose pull
+    chdir: "{{ docker_services_dir }}/{{ app_name }}"
+  register: pull_result
+  # "Pull complete" appears per layer when images were actually pulled; absent when already up to date
+  changed_when: (pull_result.stdout + pull_result.stderr) is search('Pull complete')
+
+- name: Start services
+  ansible.builtin.command:
+    cmd: docker compose up -d
+    chdir: "{{ docker_services_dir }}/{{ app_name }}"
+  register: up_result
+  changed_when: >
+    (up_result.stdout + up_result.stderr) is search('Recreated') or
+    (up_result.stdout + up_result.stderr) is search('Creating ') or
+    (up_result.stdout + up_result.stderr) is search('Starting ')

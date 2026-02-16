@@ -1,6 +1,5 @@
 ---
 - name: Add users to docker group
-  become: true
   ansible.builtin.user:
     name: "{{ item }}"
     groups: docker
@@ -8,13 +7,11 @@
   loop: "{{ docker_services_users }}"
 
 - name: Enable Docker service
-  become: true
   ansible.builtin.systemd:
     name: docker
     enabled: yes
 
 - name: Enable Containerd service
-  become: true
   ansible.builtin.systemd:
     name: containerd
     enabled: yes

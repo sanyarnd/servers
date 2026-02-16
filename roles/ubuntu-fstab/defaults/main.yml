@@ -1,0 +1,8 @@
+---
+mounts_fstab_path: "/etc/fstab"
+mounts_base_path: "/mnt"
+mounts_mergerfs_version: "2.41.1"
+mounts_access_group: "media"
+# Users to add to mounts_access_group. Override in host_vars or group_vars.
+mounts_users: []
+# mounts_boot, mounts_normal, mounts_pooled: define in host_vars or group_vars per host.

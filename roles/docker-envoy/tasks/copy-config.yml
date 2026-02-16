@@ -1,14 +1,11 @@
 ---
-- name: Create temp configuration file
+- name: Copy configuration file to app directory
   ansible.builtin.copy:
     src: envoy.yaml
-    dest: /tmp/envoy.yaml
+    dest: "{{ docker_services_dir }}/{{ app_name }}/envoy.yaml"
     mode: '0644'
+  notify: restart envoy
 
 - name: Copy config to the container
-  ansible.builtin.shell: docker cp /tmp/envoy.yaml envoy:/etc/envoy/custom/envoy.yaml
-
-- name: Remove temp configuration file
-  ansible.builtin.file:
-    path: /tmp/envoy.yaml
-    state: absent
+  ansible.builtin.command:
+    cmd: docker cp "{{ docker_services_dir }}/{{ app_name }}/envoy.yaml" envoy:/etc/envoy/custom/envoy.yaml

@@ -1,0 +1,3 @@
+---
+# Users to add to dialout group (e.g. for serial/USB). Override in host_vars or group_vars.
+dialout_users: []

@@ -9,6 +9,18 @@ For example, to launch `homelab` playbook, use the following command:
 ansible-playbook homelab.yml --ask-become-pass
 ```
 
+### Running only some roles (tags)
+
+You can limit the run to specific roles with `--tags`:
+
+```shell
+# Only base system + Docker
+ansible-playbook homelab.yml --ask-become-pass --tags base,docker
+
+# Only Home Assistant
+ansible-playbook homelab.yml --ask-become-pass --tags homeassistant
+```
+
 ## Prerequisites (devcontainers)
 
 Devcontainers use `ssh-agent` to forward host keys inside a container.

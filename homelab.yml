@@ -1,14 +1,23 @@
 ---
 - name: Setup Homelab Server
   hosts: homelab
+  become: true
   roles:
-    # - role: ubuntu-base
-    # - role: ubuntu-docker
-    # - role: ubuntu-fstab
+    - role: ubuntu-base
+      tags: [base, always]
+    - role: ubuntu-docker
+      tags: [base, docker]
+    - role: ubuntu-fstab
+      tags: [base, fstab]
     - role: docker-homeassistant
-    # - role: docker-dns
-    # - role: docker-qbittorrent
-    # - role: docker-jellyfin
-    # - role: docker-stash
-    # - role: docker-traefik
-    # - role: docker-apps
+      tags: [apps, homeassistant]
+    - role: docker-dns
+      tags: [apps, dns]
+    - role: docker-qbittorrent
+      tags: [apps, qbittorrent]
+    - role: docker-jellyfin
+      tags: [apps, jellyfin]
+    - role: docker-stash
+      tags: [apps, stash]
+    - role: docker-envoy
+      tags: [apps, envoy]

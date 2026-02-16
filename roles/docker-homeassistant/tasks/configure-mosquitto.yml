@@ -1,24 +1,11 @@
 ---
-- name: Start the mosquitto service
-  ansible.builtin.shell:
-    cmd: docker compose up -d mosquitto
-    chdir: "{{ docker_services_dir }}/{{ app_name }}"
-
-- name: Create temp configuration file
+- name: Copy mosquitto config to app directory
   ansible.builtin.copy:
     src: mosquitto.conf
-    dest: /tmp/mosquitto.conf
+    dest: "{{ docker_services_dir }}/{{ app_name }}/mosquitto.conf"
     mode: '0644'
+  notify: restart mosquitto
 
-- name: Copy file to mosquitto container
-  ansible.builtin.shell: docker cp /tmp/mosquitto.conf mosquitto:/mosquitto/config/mosquitto.conf
-
-- name: Remove temp configuration file
-  ansible.builtin.file:
-    path: /tmp/mosquitto.conf
-    state: absent
-
-- name: Restart the mosquitto service
-  ansible.builtin.shell:
-    cmd: docker compose restart mosquitto
-    chdir: "{{ docker_services_dir }}/{{ app_name }}"
+- name: Copy config to mosquitto container
+  ansible.builtin.command:
+    cmd: docker cp "{{ docker_services_dir }}/{{ app_name }}/mosquitto.conf" mosquitto:/mosquitto/config/mosquitto.conf
