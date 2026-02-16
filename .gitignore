@@ -1,1 +1,21 @@
+# IDE and editors
 .idea/
+
+# Vault files
+*.vault
+!*.vault.example
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+services:
+  dns-server:
+    image: technitium/dns-server:14.3.0
+    container_name: dns-server
+    restart: unless-stopped
+    network_mode: "host"
+    environment:
+      - TZ=Europe/Moscow
+      - DNS_SERVER_DOMAIN=dns-server
+      - DNS_SERVER_WEB_SERVICE_HTTP_PORT=5380
+    volumes:
+      - config:/etc/dns
+
+volumes:
+  config:

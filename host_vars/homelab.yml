@@ -1,0 +1,128 @@
+---
+# --------------------------------------
+# base system
+# --------------------------------------
+dialout_users:
+  - alex
+  - ansible
+
+# --------------------------------------
+# docker services settings
+# --------------------------------------
+docker_services_dir: "/opt/docker-services"
+docker_services_group: "docker-services"
+docker_services_users:
+  - alex
+  - ansible
+
+# --------------------------------------
+# fstab settings
+# --------------------------------------
+mounts_mergerfs_version: "2.41.1"
+mounts_fstab_path: "/etc/fstab"
+mounts_base_path: "/mnt"
+mounts_access_group: "media"
+mounts_users:
+  - alex
+  - ansible
+
+mounts_boot:
+  - device: "/dev/disk/by-id/dm-uuid-LVM-BH8GE9gsgEvvg6oAOiwnwkpYqOv2cUdb4u7oMq6LKueF14N9cRpe0i9j81BnO2SZ"
+    mount_point: "/"
+    type: "ext4"
+    options: defaults
+    dump: 0
+    pass: 1
+  - device: "/dev/disk/by-uuid/975e2593-0db5-46e6-a2d1-fc2527a18a1f"
+    mount_point: "/boot"
+    type: "ext4"
+    options: "defaults"
+    dump: 0
+    pass: 1
+  - device: "/dev/disk/by-uuid/0874-E9F6"
+    mount_point: "/boot/efi"
+    type: "vfat"
+    options: "defaults"
+    dump: 0
+    pass: 1
+  - device: "/swap.img"
+    mount_point: "none"
+    type: "swap"
+    options: "sw"
+    dump: 0
+    pass: 0
+
+mounts_normal:
+  - uuid: "94f3b831-0159-47d8-822e-86fd1b5f7008"
+    mount_point: "/mnt/hdd1"
+    type: "ext4"
+    options: "defaults,nofail"
+    dump: 0
+    pass: 2
+    comment: "8TB Seagate Enterprise 2019"
+
+  - uuid: "68cd5296-dd92-4524-9c60-ffb43974d334"
+    mount_point: "/mnt/hdd2"
+    type: "ext4"
+    options: "defaults,nofail"
+    dump: 0
+    pass: 2
+    comment: "8TB Seagate Exos 2022"
+
+  - uuid: "39414da2-9eb8-4cb7-88c0-5108355f3e48"
+    mount_point: "/mnt/hdd3"
+    type: "ext4"
+    options: "defaults,nofail"
+    dump: 0
+    pass: 2
+    comment: "16TB TOSHIBA MG08ACA1 2025"
+
+  - uuid: "B0D49C4CD49C16A6"
+    mount_point: "/mnt/pilidi/hdd1"
+    type: "ntfs-3g"
+    options: "defaults,nofail,uid=root,gid=media,umask=007"
+    dump: 0
+    pass: 0
+    comment: "Pilidi 1"
+
+  - uuid: "08CEA591CEA57818"
+    mount_point: "/mnt/pilidi/hdd2.1"
+    type: "ntfs-3g"
+    options: "defaults,nofail,uid=root,gid=media,umask=007"
+    dump: 0
+    pass: 0
+    comment: "Pilidi 2.1"
+
+  - uuid: "32C896D8C8969A25"
+    mount_point: "/mnt/pilidi/hdd2.2"
+    type: "ntfs-3g"
+    options: "defaults,nofail,uid=root,gid=media,umask=007"
+    dump: 0
+    pass: 0
+    comment: "Pilidi 2.2"
+
+mounts_pooled:
+  - name: "media"
+    mount_point: "/mnt/media"
+    dump: 0
+    pass: 0
+    # process-thread-count=-2: Enables a separate thread pool for processing FUSE requests.
+    #   Value -2 means: number of CPU cores divided by 2 (minimum 1 thread).
+    #   -1 disables separate processing threads; 0 uses core count; positive values set a fixed number.
+    # read-thread-count=-2: Number of threads dedicated to reading FUSE messages from the kernel.
+    #   -2 means: number of CPU cores divided by 2.
+    #   Works together with process-thread-count to separate reading and processing stages.
+    # lazy-umount-mountpoint=true: mergerfs will attempt to "lazy unmount" the mount point before mounting.
+    #   Useful for live upgrades or avoiding mount conflicts.
+    # category.create=pfrd: Policy for new file placement — selects the first branch with above-average free space.
+    #   Tends to fill drives sequentially and respects branch order. Good for predictability and reducing disk spin-ups.
+    # func.getattr=newest: File attributes (like mtime) are taken from the newest (most recently modified) version across branches.
+    # cache.readdir=true: Enables directory entry caching, improving readdir() performance when supported.
+    # cache.files=partial: Enables partial file data caching in FUSE, boosting read performance.
+    #   Helps with streaming or sequential access but requires dropcacheonclose to avoid double caching.
+    # dropcacheonclose=true: When a file is closed, instructs the kernel to drop its page cache.
+    #   Recommended with cache.files=partial to reduce memory usage and avoid duplication.
+    options: "process-thread-count=-2,read-thread-count=-2,lazy-umount-mountpoint=true,category.create=pfrd,func.getattr=newest,cache.readdir=true,cache.files=partial,dropcacheonclose=true"
+    branches:
+      - "/mnt/hdd1"
+      - "/mnt/hdd2"

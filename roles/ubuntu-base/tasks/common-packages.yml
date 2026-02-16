@@ -1,0 +1,37 @@
+---
+- name: install common packages
+  become: yes
+  apt:
+    update_cache: true
+    state: latest
+    pkg:
+      - apt-transport-https
+      - bash-completion
+      - btop
+      - build-essential
+      - ca-certificates
+      - curl
+      - dbus-user-session
+      - dbus-user-session
+      - dnsutils
+      - fdisk
+      - git
+      - gnupg
+      - htop
+      - jq
+      - mc
+      - nano
+      - net-tools
+      - ntfs-3g
+      - parted
+      - software-properties-common
+      - stress-ng
+      - sysbench
+      - systemd-container
+      - systemd-container
+      - traceroute
+      - uidmap
+      - uidmap
+      - unzip
+      - wget
+      - zsh

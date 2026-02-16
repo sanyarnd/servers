@@ -1,0 +1,16 @@
+services:
+  envoy:
+    image: envoyproxy/envoy:v1.35-latest
+    container_name: envoy
+    restart: unless-stopped
+    command: ["-c", "/etc/envoy/custom/envoy.yaml"]
+    ports:
+      - "80:80"
+      - "9901:9901"
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - envoy-config:/etc/envoy/custom
+
+volumes:
+  envoy-config:

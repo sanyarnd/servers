@@ -1,0 +1,34 @@
+################################################################################
+#>> This file is managed by Ansible - changes made here will be overwritten. <<#
+################################################################################
+#
+# {{ mounts_fstab_path }}: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+
+###### Boot Mounts (system)
+{% for mount in mounts_boot %}
+{{ mount.device }} {{ mount.mount_point }} {{ mount.type }} {{ mount.options }} {{ mount.dump }} {{ mount.pass }}
+{% endfor %}
+
+{% if mounts_normal is defined and mounts_normal|length > 0 %}
+###### Normal Mounts (direct mount)
+{% for mount in mounts_normal %}
+{% if mount.comment is defined %}# {{ mount.comment }}
+{% endif %}
+UUID={{ mount.uuid }} {{ mount.mount_point }} {{ mount.type }} {{ mount.options }} {{ mount.dump }} {{ mount.pass }}
+{% endfor %}
+{% endif %}
+
+{% if mounts_pooled is defined and mounts_pooled|length > 0 %}
+###### Drive Pools (MergerFS)
+{% for pool in mounts_pooled %}
+{% if pool.comment is defined %}# {{ pool.comment }}
+{% endif %}
+{{ pool.branches|join(':') }} {{ pool.mount_point }} fuse.mergerfs {% if pool.name is defined and pool.name != '' %}fsname={{ pool.name }},{% endif %}{{ pool.options }} {{ pool.dump }} {{ pool.pass }}
+{% endfor %}
+{% endif %}

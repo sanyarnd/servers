@@ -1,0 +1,33 @@
+---
+- name: Ensure destination directory exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ docker_services_dir }}/{{ app_name }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ docker_services_group }}"
+    mode: "0775"
+
+- name: Push out the 'compose' file
+  ansible.builtin.copy:
+    src: compose.yml
+    dest: "{{ docker_services_dir }}/{{ app_name }}/compose.yml"
+    owner: "{{ ansible_user }}"
+    group: "{{ docker_services_group }}"
+    mode: "0664"
+
+- name: Pull the image
+  ansible.builtin.shell:
+    cmd: docker compose pull
+    chdir: "{{ docker_services_dir }}/{{ app_name }}"
+
+- name: Configure Mosquitto
+  import_tasks: configure-mosquitto.yml
+
+- name: Install HACS
+  import_tasks: configure-hacs.yml
+
+- name: Start all services
+  ansible.builtin.shell:
+    cmd: docker compose up -d
+    chdir: "{{ docker_services_dir }}/{{ app_name }}"

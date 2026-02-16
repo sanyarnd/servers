@@ -1,0 +1,31 @@
+services:
+  stash:
+    image: ghcr.io/feederbox826/stash-s6:hwaccel
+    container_name: stash
+    restart: unless-stopped
+    group_add:
+      - '44'  # getent group video | cut -d: -f3
+      - '993' # getent group render | cut -d: -f3
+    environment:
+      - PUID=1001
+      - PGID=1002
+      - TZ=Europe/Moscow
+      - STASH_PORT=9999
+      - STASH_STASH=/data/
+      - STASH_GENERATED=/generated/
+      - STASH_METADATA=/metadata/
+      - STASH_CACHE=/cache/
+    ports:
+      - "9999:9999"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "10"
+        max-size: "2m"
+    volumes:
+      - /mnt/media/adult/.stash/cache:/cache
+      - /mnt/media/adult/.stash/blobs:/blobs
+      - /mnt/media/adult/.stash/generated:/generated
+      - /mnt/media/adult/.stash/metadata:/metadata
+      - /mnt/media/adult/.stash/settings:/root/.stash
+      - /mnt/media/adult/data:/data

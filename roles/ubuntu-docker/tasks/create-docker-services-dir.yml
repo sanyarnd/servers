@@ -1,0 +1,20 @@
+---
+- name: Create group for docker services directory
+  ansible.builtin.group:
+    name: "{{ docker_services_group }}"
+    state: present
+
+- name: Add users to docker services group
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: "{{ docker_services_group }}"
+    append: yes
+  loop: "{{ docker_services_users }}"
+
+- name: Create base directory for docker services
+  file:
+    path: "{{ docker_services_dir }}"
+    state: directory
+    owner: root
+    group: docker
+    mode: '0775'

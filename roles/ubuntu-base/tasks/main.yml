@@ -1,0 +1,10 @@
+---
+
+- name: install common packages
+  import_tasks: common-packages.yml
+
+- name: install lm-sensors package
+  import_tasks: lm-sensors.yml
+
+- name: share dialout group
+  import_tasks: share-dialout.yml

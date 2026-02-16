@@ -1,0 +1,12 @@
+---
+- name: install lm-sensors package
+  become: yes
+  apt:
+    update_cache: true
+    state: latest
+    pkg:
+      - lm-sensors
+
+- name: detect sensors
+  become: yes
+  ansible.builtin.command: sensors-detect --auto

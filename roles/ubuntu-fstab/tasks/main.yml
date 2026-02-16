@@ -1,0 +1,12 @@
+---
+- name: install mergerfs packages
+  become: true
+  import_tasks: install_mergerfs.yml
+
+- name: update /etc/fstab
+  become: true
+  import_tasks: update_fstab.yml
+
+- name: share data via group
+  become: true
+  import_tasks: share_disks.yml

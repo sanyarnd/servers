@@ -1,0 +1,15 @@
+---
+- name: Download 'mergerfs' installation package
+  ansible.builtin.get_url:
+    url: "https://github.com/trapexit/mergerfs/releases/download/{{ mounts_mergerfs_version }}/mergerfs_{{ mounts_mergerfs_version }}.{{ ansible_distribution|lower }}-{{ ansible_distribution_release }}_amd64.deb"
+    dest: "/tmp/mergerfs.deb"
+    timeout: 60
+
+- name: Install 'mergerfs'
+  ansible.builtin.apt:
+    deb: "/tmp/mergerfs.deb"
+
+- name: Remove .deb file
+  ansible.builtin.file:
+    path: "/tmp/mergerfs.deb"
+    state: absent

@@ -1,0 +1,60 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    networks:
+      - homeassistant
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - mosquitto-config:/mosquitto/config
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-logs:/mosquitto/log
+
+  homeassistant:
+    image: homeassistant/home-assistant:stable
+    container_name: homeassistant
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+      - zigbee2mqtt
+    networks:
+      - homeassistant
+    ports:
+      - "8123:8123"
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - ha-config:/config
+
+  zigbee2mqtt:
+    image: ghcr.io/koenkk/zigbee2mqtt:2
+    container_name: zigbee2mqtt
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    networks:
+      - homeassistant
+    ports:
+      - "8124:8080"
+    environment:
+      - TZ=Europe/Moscow
+    volumes:
+      - z2m-data:/app/data
+      - z2m-logs:/app/data/log
+
+volumes:
+  ha-config:
+  mosquitto-config:
+  mosquitto-data:
+  mosquitto-logs:
+  z2m-data:
+  z2m-logs:
+
+networks:
+  homeassistant:
+    name: homeassistant

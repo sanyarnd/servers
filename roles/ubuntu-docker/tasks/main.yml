@@ -1,0 +1,12 @@
+---
+- name: install docker packages
+  become: true
+  import_tasks: install.yml
+
+- name: configure docker
+  become: true
+  import_tasks: post-install.yml
+
+- name: create directory for docker services
+  become: true
+  import_tasks: create-docker-services-dir.yml
