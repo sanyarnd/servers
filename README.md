@@ -82,5 +82,5 @@ Make sure to run [unminimize](https://documentation.ubuntu.com/public-cloud/all-
     ```
 6. Validate the connection:
     ```shell
-    ansible -m ping <server-name>
+    ansible servers -m ping
     ```

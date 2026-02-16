@@ -31,5 +31,5 @@
 
 - name: Restart the service
   ansible.builtin.shell:
-    cmd:  docker compose restart
+    cmd: docker compose restart
     chdir: "{{ docker_services_dir }}/{{ app_name }}"

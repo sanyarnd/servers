@@ -1,7 +1,7 @@
 ---
 - name: Start the home assistant service
   ansible.builtin.shell:
-    cmd:  docker compose up -d homeassistant
+    cmd: docker compose up -d homeassistant
     chdir: "{{ docker_services_dir }}/{{ app_name }}"
 
 - name: Install HACS

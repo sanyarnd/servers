@@ -1,7 +1,7 @@
 ---
 - name: install common packages
-  become: yes
-  apt:
+  become: true
+  ansible.builtin.apt:
     update_cache: true
     state: latest
     pkg:
@@ -11,7 +11,6 @@
       - build-essential
       - ca-certificates
       - curl
-      - dbus-user-session
       - dbus-user-session
       - dnsutils
       - fdisk
@@ -28,9 +27,7 @@
       - stress-ng
       - sysbench
       - systemd-container
-      - systemd-container
       - traceroute
-      - uidmap
       - uidmap
       - unzip
       - wget

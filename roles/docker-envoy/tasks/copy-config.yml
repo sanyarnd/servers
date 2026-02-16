@@ -6,9 +6,9 @@
     mode: '0644'
 
 - name: Copy config to the container
-  ansible.builtin.shell:  docker cp /tmp/envoy.yaml envoy:/etc/envoy/custom/envoy.yaml
+  ansible.builtin.shell: docker cp /tmp/envoy.yaml envoy:/etc/envoy/custom/envoy.yaml
 
 - name: Remove temp configuration file
-  file:
+  ansible.builtin.file:
     path: /tmp/envoy.yaml
     state: absent
