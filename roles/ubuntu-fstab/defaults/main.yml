@@ -3,6 +3,26 @@ mounts_fstab_path: "/etc/fstab"
 mounts_base_path: "/mnt"
 mounts_mergerfs_version: "2.41.1"
 mounts_access_group: "media"
+mounts_owner_user: "root"
+# Default owner for mounted data directories. Override per host (e.g. 'ansible').
 # Users to add to mounts_access_group. Override in host_vars or group_vars.
 mounts_users: []
 # mounts_boot, mounts_normal, mounts_pooled: define in host_vars or group_vars per host.
+#
+# mounts_normal example entries (ext4 and ntfs-3g):
+# mounts_normal:
+#   - uuid: "<ext4-uuid>"
+#     mount_point: "/mnt/hdd3"
+#     type: "ext4"             # ext4 data disk
+#     options: "defaults,nofail"
+#     dump: 0
+#     pass: 2                  # fsck on boot (non-root data disk)
+#     comment: "16TB TOSHIBA MG08ACA1 2025"
+#
+#   - uuid: "<ntfs-uuid>"
+#     mount_point: "/mnt/pilidi/hdd1"
+#     type: "ntfs-3g"          # external NTFS disk
+#     options: "defaults,nofail,uid=root,gid=media,umask=007"
+#     dump: 0
+#     pass: 0                  # do not fsck NTFS at boot
+#     comment: "2TB SEAGATE Exos 2023"

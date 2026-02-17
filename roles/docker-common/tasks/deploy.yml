@@ -17,20 +17,8 @@
     group: "{{ docker_services_group }}"
     mode: "0664"
 
-- name: Pull images
-  ansible.builtin.command:
-    cmd: docker compose pull
-    chdir: "{{ docker_services_dir }}/{{ app_name }}"
-  register: pull_result
-  # "Pull complete" appears per layer when images were actually pulled; absent when already up to date
-  changed_when: (pull_result.stdout + pull_result.stderr) is search('Pull complete')
-
-- name: Start services
-  ansible.builtin.command:
-    cmd: docker compose up -d
-    chdir: "{{ docker_services_dir }}/{{ app_name }}"
-  register: up_result
-  changed_when: >
-    (up_result.stdout + up_result.stderr) is search('Recreated') or
-    (up_result.stdout + up_result.stderr) is search('Creating ') or
-    (up_result.stdout + up_result.stderr) is search('Starting ')
+- name: Pull images and start services
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_services_dir }}/{{ app_name }}"
+    state: present
+    pull: always

@@ -7,5 +7,7 @@
   notify: restart envoy
 
 - name: Copy config to the container
-  ansible.builtin.command:
-    cmd: docker cp "{{ docker_services_dir }}/{{ app_name }}/envoy.yaml" envoy:/etc/envoy/custom/envoy.yaml
+  community.docker.docker_container_copy_into:
+    container: envoy
+    path: "{{ docker_services_dir }}/{{ app_name }}/envoy.yaml"
+    container_path: /etc/envoy/custom/envoy.yaml

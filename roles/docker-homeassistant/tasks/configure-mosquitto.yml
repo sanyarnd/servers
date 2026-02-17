@@ -7,5 +7,7 @@
   notify: restart mosquitto
 
 - name: Copy config to mosquitto container
-  ansible.builtin.command:
-    cmd: docker cp "{{ docker_services_dir }}/{{ app_name }}/mosquitto.conf" mosquitto:/mosquitto/config/mosquitto.conf
+  community.docker.docker_container_copy_into:
+    container: mosquitto
+    path: "{{ docker_services_dir }}/{{ app_name }}/mosquitto.conf"
+    container_path: /mosquitto/config/mosquitto.conf

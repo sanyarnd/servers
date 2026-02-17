@@ -16,9 +16,9 @@
   ansible.builtin.file:
     path: "{{ item.mount_point }}"
     state: directory
-    owner: root
-    group: root
-    mode: "0755"
+    owner: "{{ mounts_owner_user }}"
+    group: "{{ mounts_access_group }}"
+    mode: "0770"
   loop: "{{ mounts_normal }}"
   when: mounts_normal is defined
 
@@ -26,9 +26,9 @@
   ansible.builtin.file:
     path: "{{ item.mount_point }}"
     state: directory
-    owner: root
-    group: root
-    mode: "0755"
+    owner: "{{ mounts_owner_user }}"
+    group: "{{ mounts_access_group }}"
+    mode: "0770"
   loop: "{{ mounts_pooled }}"
   when: mounts_pooled is defined
 
@@ -41,5 +41,25 @@
 
 - name: Mount pooled drives
   ansible.builtin.command: "mount --target {{ item.mount_point }}"
+  loop: "{{ mounts_pooled }}"
+  when: mounts_pooled is defined
+
+- name: Ensure ownership of normal drive roots
+  ansible.builtin.file:
+    path: "{{ item.mount_point }}"
+    state: directory
+    owner: "{{ mounts_owner_user }}"
+    group: "{{ mounts_access_group }}"
+    mode: "0770"
+  loop: "{{ mounts_normal }}"
+  when: mounts_normal is defined
+
+- name: Ensure ownership of pooled drive roots
+  ansible.builtin.file:
+    path: "{{ item.mount_point }}"
+    state: directory
+    owner: "{{ mounts_owner_user }}"
+    group: "{{ mounts_access_group }}"
+    mode: "0770"
   loop: "{{ mounts_pooled }}"
   when: mounts_pooled is defined

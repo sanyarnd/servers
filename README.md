@@ -1,5 +1,13 @@
 # Ansible scripts for homelab and VPS servers
 
+## Dependencies
+
+Install the required Ansible collection before running playbooks:
+
+```shell
+ansible-galaxy collection install -r requirements.yml
+```
+
 ## Run playbooks
 
 All playbooks are located in the project root directory.

@@ -2,6 +2,7 @@
 dialout_users: [ alex, ansible ]
 docker_services_users: [ alex, ansible ]
 mounts_users: [ alex, ansible ]
+mounts_owner_user: ansible
 
 # --------------------------------------
 # Disks
@@ -65,22 +66,6 @@ mounts_normal:
     pass: 0
     comment: "Pilidi 1"
 
-  - uuid: "08CEA591CEA57818"
-    mount_point: "/mnt/pilidi/hdd2.1"
-    type: "ntfs-3g"
-    options: "defaults,nofail,uid=root,gid=media,umask=007"
-    dump: 0
-    pass: 0
-    comment: "Pilidi 2.1"
-
-  - uuid: "32C896D8C8969A25"
-    mount_point: "/mnt/pilidi/hdd2.2"
-    type: "ntfs-3g"
-    options: "defaults,nofail,uid=root,gid=media,umask=007"
-    dump: 0
-    pass: 0
-    comment: "Pilidi 2.2"
-
 mounts_pooled:
   - name: "media"
     mount_point: "/mnt/media"
@@ -106,3 +91,5 @@ mounts_pooled:
     branches:
       - "/mnt/hdd1"
       - "/mnt/hdd2"
+      # - "/mnt/hdd3"
+      # - "/mnt/hdd4"

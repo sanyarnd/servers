@@ -1,6 +1,9 @@
 ---
 - name: Install HACS
-  ansible.builtin.shell: docker exec homeassistant /bin/bash -c "wget -O - https://get.hacs.xyz | bash -"
+  community.docker.docker_compose_v2_exec:
+    project_src: "{{ docker_services_dir }}/{{ app_name }}"
+    service: homeassistant
+    command: /bin/bash -c "wget -O - https://get.hacs.xyz | bash -"
   register: hacs_result
   changed_when: "'already' not in (hacs_result.stdout + hacs_result.stderr)"
   notify: restart homeassistant
