@@ -19,6 +19,7 @@
       - jq
       - mc
       - nano
+      - ncdu
       - net-tools
       - ntfs-3g
       - parted

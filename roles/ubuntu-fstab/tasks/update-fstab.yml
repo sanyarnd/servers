@@ -4,13 +4,34 @@
     msg: "You must define all the boot drives manually"
   when: mounts_boot is not defined or mounts_boot|length == 0
 
-- name: Push out the 'fstab' file
+- name: Render candidate 'fstab' file
   ansible.builtin.template:
-    dest: "{{ mounts_fstab_path }}"
+    dest: "{{ mounts_fstab_path }}.ansible"
     src: fstab.j2
     owner: root
     group: root
     mode: "0644"
+
+- name: Validate candidate fstab
+  ansible.builtin.command:
+    argv:
+      - findmnt
+      - --verify
+      - --verbose
+      - --tab-file
+      - "{{ mounts_fstab_path }}.ansible"
+  register: fstab_verify
+  changed_when: false
+  failed_when: fstab_verify.rc != 0
+
+- name: Push validated 'fstab' file into place
+  ansible.builtin.copy:
+    src: "{{ mounts_fstab_path }}.ansible"
+    dest: "{{ mounts_fstab_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+    remote_src: true
 
 - name: Create mount points for normal drives
   ansible.builtin.file:
