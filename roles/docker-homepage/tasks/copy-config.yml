@@ -1,0 +1,28 @@
+---
+- name: Template homepage configuration files
+  ansible.builtin.template:
+    src: "{{ item }}.yaml.j2"
+    dest: "{{ docker_services_dir }}/{{ app_name }}/{{ item }}.yaml"
+    owner: "{{ ansible_user }}"
+    group: "{{ docker_services_group }}"
+    mode: "0664"
+  loop:
+    - settings
+    - services
+    - widgets
+    - bookmarks
+    - docker
+  notify: restart homepage
+
+- name: Copy configuration files to the container
+  community.docker.docker_container_copy_into:
+    container: homepage
+    path: "{{ docker_services_dir }}/{{ app_name }}/{{ item }}.yaml"
+    container_path: "/app/config/{{ item }}.yaml"
+  loop:
+    - settings
+    - services
+    - widgets
+    - bookmarks
+    - docker
+  notify: restart homepage

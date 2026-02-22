@@ -10,9 +10,9 @@ services:
       - WEBUI_PORT=8111
       - TORRENTING_PORT=6881
     ports:
-      - 8111:8111
-      - 6881:6881
-      - 6881:6881/udp
+      - "8111:8111"
+      - "6881:6881"
+      - "6881:6881/udp"
     volumes:
       - config:/config
       - /mnt/media/torrents:/downloads

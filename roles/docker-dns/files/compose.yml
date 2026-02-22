@@ -1,6 +1,6 @@
 services:
   dns-server:
-    image: technitium/dns-server:14.3.0
+    image: technitium/dns-server:latest
     container_name: dns-server
     restart: unless-stopped
     network_mode: "host"

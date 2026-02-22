@@ -7,3 +7,16 @@
   ansible.builtin.include_role:
     name: docker-common
     tasks_from: deploy.yml
+
+- name: Wait for Technitium API to be ready
+  ansible.builtin.uri:
+    url: "{{ technitium_api_url }}:{{ technitium_api_port }}/api/zones/list?token={{ technitium_api_token }}"
+    method: GET
+    status_code: 200
+  register: api_check
+  until: api_check.status == 200
+  retries: 30
+  delay: 2
+
+- name: Configure DNS records
+  ansible.builtin.import_tasks: configure-records.yml

@@ -1,0 +1,64 @@
+name: immich
+
+services:
+  immich-server:
+    container_name: immich_server
+    image: ghcr.io/immich-app/immich-server:v2
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - /mnt/media/photos/immich:/data
+      - /mnt/media/photos/external:/external
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PUID=1001
+      - PGID=1002
+      - TZ=Europe/Moscow
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE_NAME=immich
+    ports:
+      - '2283:2283'
+    depends_on:
+      - redis
+      - database
+    restart: always
+
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    image: ghcr.io/immich-app/immich-machine-learning:v2-openvino
+    device_cgroup_rules:
+      - 'c 189:* rmw'
+    devices:
+      - /dev/dri:/dev/dri
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - model-cache:/cache
+    environment:
+      - TZ=Europe/Moscow
+    restart: always
+
+  redis:
+    container_name: immich_redis
+    image: docker.io/valkey/valkey:9
+    healthcheck:
+      test: redis-cli ping || exit 1
+    restart: always
+
+  database:
+    container_name: immich_postgres
+    image: ghcr.io/immich-app/postgres:18-vectorchord0.5.3-pgvector0.8.1
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: immich
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+      DB_STORAGE_TYPE: 'HDD'
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    shm_size: 128mb
+    restart: always
+
+volumes:
+  postgres-data:
+  model-cache:

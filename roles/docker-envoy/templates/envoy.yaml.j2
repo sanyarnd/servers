@@ -18,53 +18,41 @@ static_resources:
               typed_config:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 stat_prefix: ingress_http
+                use_remote_address: true
+                xff_num_trusted_hops: 0
+                upgrade_configs:
+                  - upgrade_type: websocket
                 route_config:
                   name: local_route
-
                   virtual_hosts:
-                    - name: home-assistant
-                      domains: ["hass.lan", "hass.lan:*"] # match exact host
+{% for svc in lab_services %}
+                    - name: {{ svc.name }}
+                      domains: ["{{ svc.name }}.{{ lab_domain }}", "{{ svc.name }}.{{ lab_domain }}:*"]
                       routes:
                         - match:
                             prefix: "/"
                           route:
-                            cluster: home-assistant
-
-                    - name: zigbee2mqtt
-                      domains: ["z2m.lan", "z2m.lan:*"]
-                      routes:
-                        - match:
-                            prefix: "/"
-                          route:
-                            cluster: zigbee2mqtt
+                            cluster: {{ svc.name }}
+                            timeout: 0s
+{% endfor %}
                 http_filters:
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
   clusters:
-    - name: home-assistant
+{% for svc in lab_services %}
+    - name: {{ svc.name }}
       connect_timeout: 30s
       type: LOGICAL_DNS
       lb_policy: ROUND_ROBIN
       load_assignment:
-        cluster_name: home-assistant
+        cluster_name: {{ svc.name }}
         endpoints:
           - lb_endpoints:
               - endpoint:
                   address:
                     socket_address:
-                      address: 192.168.88.88
-                      port_value: 8123
-    - name: zigbee2mqtt
-      connect_timeout: 30s
-      type: LOGICAL_DNS
-      lb_policy: ROUND_ROBIN
-      load_assignment:
-        cluster_name: zigbee2mqtt
-        endpoints:
-          - lb_endpoints:
-              - endpoint:
-                  address:
-                    socket_address:
-                      address: 192.168.88.88
-                      port_value: 8124
+                      address: {{ lab_ip }}
+                      port_value: {{ svc.port }}
+{% endfor %}

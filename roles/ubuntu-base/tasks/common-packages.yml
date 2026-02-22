@@ -29,6 +29,8 @@
       - systemd-container
       - traceroute
       - uidmap
+      - unattended-upgrades
+      - apt-listchanges
       - unzip
       - wget
       - zsh

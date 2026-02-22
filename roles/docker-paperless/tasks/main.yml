@@ -7,6 +7,3 @@
   ansible.builtin.include_role:
     name: docker-common
     tasks_from: deploy.yml
-
-- name: Copy configuration file
-  ansible.builtin.import_tasks: copy-config.yml

@@ -14,7 +14,7 @@ All playbooks are located in the project root directory.
 
 For example, to launch `homelab` playbook, use the following command:
 ```shell
-ansible-playbook homelab.yml --ask-become-pass
+ansible-playbook homelab.yml --ask-become-pass --ask-vault-pass
 ```
 
 ### Running only some roles (tags)
@@ -26,7 +26,7 @@ You can limit the run to specific roles with `--tags`:
 ansible-playbook homelab.yml --ask-become-pass --tags base,docker
 
 # Only Home Assistant
-ansible-playbook homelab.yml --ask-become-pass --tags homeassistant
+ansible-playbook homelab.yml --ask-become-pass --ask-vault-pass --tags homeassistant
 ```
 
 ## Prerequisites (devcontainers)

@@ -1,5 +1,5 @@
 ---
-- name: restart envoy
+- name: restart homepage
   community.docker.docker_compose_v2:
     project_src: "{{ docker_services_dir }}/{{ app_name }}"
     state: restarted

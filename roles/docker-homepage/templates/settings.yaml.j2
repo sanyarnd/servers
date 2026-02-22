@@ -1,0 +1,19 @@
+---
+title: Homelab
+favicon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/homepage.png
+
+theme: dark
+color: slate
+
+headerStyle: clean
+statusStyle: dot
+
+hideVersion: true
+
+layout:
+{% for grp in homepage_groups %}
+  {{ grp.group }}:
+    style: {{ grp.icon_style | default('row') }}
+    columns: {{ grp.columns | default(2) }}
+    icon: mdi-{{ grp.services[0].icon | default('server') }}
+{% endfor %}

@@ -1,0 +1,69 @@
+name: paperless
+
+services:
+  broker:
+    image: docker.io/library/redis:8
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+  
+  db:
+    image: docker.io/library/postgres:18
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: paperless
+      POSTGRES_INITDB_ARGS: '--data-checksums'
+      DB_STORAGE_TYPE: 'HDD'
+  
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+      - gotenberg
+      - tika
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/media/documents/data:/usr/src/paperless/data
+      - /mnt/media/documents/media:/usr/src/paperless/media
+      - /mnt/media/documents/export:/usr/src/paperless/export
+      - /mnt/media/documents/consume:/usr/src/paperless/consume
+    environment:
+      USERMAP_UID: 1001
+      USERMAP_GID: 1002
+      PAPERLESS_TIME_ZONE: Europe/Moscow
+      PAPERLESS_OCR_LANGUAGE: rus
+      # See https://packages.debian.org/search?keywords=tesseract-ocr-&searchon=names
+      PAPERLESS_OCR_LANGUAGES: eng rus fra deu
+
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_TIKA_ENABLED: 1
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+  
+  gotenberg:
+    image: docker.io/gotenberg/gotenberg:8.25
+    restart: unless-stopped
+    # The gotenberg chromium route is used to convert .eml files. We do not
+    # want to allow external content like tracking pixels or even javascript.
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
+
+  tika:
+    image: docker.io/apache/tika:latest
+    restart: unless-stopped
+
+volumes:
+  data:
+  media:
+  postgres-data:
+  redis-data:

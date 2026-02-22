@@ -1,0 +1,23 @@
+---
+{# Build a lookup dict: service id → port from lab_services (host_vars) #}
+{% set _port_map = {} %}
+{% for svc in lab_services %}
+{%   set _ = _port_map.update({svc.name: svc.port}) %}
+{% endfor %}
+
+{% for grp in homepage_groups %}
+- {{ grp.group }}:
+{% for svc in grp.services %}
+{% set port = _port_map[svc.id] | default(None) %}
+    - {{ svc.label }}:
+        href: http://{{ svc.id }}.{{ lab_domain }}
+        icon: {{ svc.icon | default('mdi-server') }}
+        description: {{ svc.description | default(svc.label) }}
+{% if port %}
+        ping: http://{{ lab_ip }}:{{ port }}
+        widget:
+          type: {{ svc.id }}
+          url: http://{{ lab_ip }}:{{ port }}
+{% endif %}
+{% endfor %}
+{% endfor %}

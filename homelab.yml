@@ -4,7 +4,7 @@
   become: true
   roles:
     - role: ubuntu-base
-      tags: [base, always]
+      tags: [base]
     - role: ubuntu-docker
       tags: [base, docker]
     - role: ubuntu-fstab
@@ -21,3 +21,15 @@
       tags: [apps, stash]
     - role: docker-envoy
       tags: [apps, envoy]
+    - role: docker-dockhand
+      tags: [apps, dockhand]
+    - role: docker-scrutiny
+      tags: [apps, scrutiny]
+    - role: docker-immich
+      tags: [apps, immich]
+    - role: docker-paperless
+      tags: [apps, paperless]
+    - role: docker-pairdrop
+      tags: [apps, pairdrop]
+    - role: docker-homepage
+      tags: [apps, homepage]

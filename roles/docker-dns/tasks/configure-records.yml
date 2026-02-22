@@ -1,0 +1,26 @@
+---
+- name: Create DNS zone
+  effectivelywild.technitium_dns.technitium_dns_zone:
+    api_url: "{{ technitium_api_url }}"
+    api_port: "{{ technitium_api_port }}"
+    api_token: "{{ technitium_api_token }}"
+    zone: "{{ lab_domain }}"
+    type: Primary
+    state: present
+    validate_certs: false
+
+- name: Add DNS A records for all services
+  effectivelywild.technitium_dns.technitium_dns_add_record:
+    api_url: "{{ technitium_api_url }}"
+    api_port: "{{ technitium_api_port }}"
+    api_token: "{{ technitium_api_token }}"
+    zone: "{{ lab_domain }}"
+    name: "{{ item.name }}.{{ lab_domain }}"
+    type: A
+    ipAddress: "{{ lab_ip }}"
+    ttl: 3600
+    overwrite: true
+    validate_certs: false
+  loop: "{{ lab_services }}"
+  loop_control:
+    label: "{{ item.name }}.{{ lab_domain }} → {{ lab_ip }}"
