@@ -25,7 +25,7 @@ static_resources:
                 route_config:
                   name: local_route
                   virtual_hosts:
-{% for svc in lab_services %}
+{% for svc in apps %}
                     - name: {{ svc.name }}
                       domains: ["{{ svc.name }}.{{ lab_domain }}", "{{ svc.name }}.{{ lab_domain }}:*"]
                       routes:
@@ -41,7 +41,7 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
-{% for svc in lab_services %}
+{% for svc in apps %}
     - name: {{ svc.name }}
       connect_timeout: 30s
       type: LOGICAL_DNS

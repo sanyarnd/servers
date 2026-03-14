@@ -11,9 +11,20 @@ statusStyle: dot
 hideVersion: true
 
 layout:
-{% for grp in homepage_groups %}
-  {{ grp.group }}:
-    style: {{ grp.icon_style | default('row') }}
-    columns: {{ grp.columns | default(2) }}
-    icon: mdi-{{ grp.services[0].icon | default('server') }}
+{% set hp_services = apps | selectattr('homepage') | list %}
+{% set _seen_groups = [] %}
+{% set _ordered_groups = [] %}
+{% for svc in hp_services %}
+{%   if svc.group not in _seen_groups %}
+{%     set _ = _seen_groups.append(svc.group) %}
+{%     set _ = _ordered_groups.append(svc.group) %}
+{%   endif %}
+{% endfor %}
+{% for grp_name in _ordered_groups %}
+{% set grp_settings = homepage_group_settings.get(grp_name, {}) %}
+{% set first_svc = hp_services | selectattr('group', 'equalto', grp_name) | first %}
+  {{ grp_name }}:
+    style: {{ grp_settings.get('icon_style', 'row') }}
+    columns: {{ grp_settings.get('columns', 2) }}
+    icon: mdi-{{ first_svc.icon }}
 {% endfor %}

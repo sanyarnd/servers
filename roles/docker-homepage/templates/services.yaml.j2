@@ -1,23 +1,69 @@
 ---
-{# Build a lookup dict: service id → port from lab_services (host_vars) #}
-{% set _port_map = {} %}
-{% for svc in lab_services %}
-{%   set _ = _port_map.update({svc.name: svc.port}) %}
+{# ── macro: emit a single YAML value with correct type ── #}
+{% macro yaml_value(v) %}
+{% if v is sameas true %}true
+{%- elif v is sameas false %}false
+{%- elif v is number %}{{ v }}
+{%- elif v is iterable and v is not string and v is not mapping %}[{% for item in v %}{{ yaml_value(item) }}{% if not loop.last %}, {% endif %}{% endfor %}]
+{%- elif v is mapping %}{# should not happen at leaf level, skip #}{}
+{%- else %}"{{ v }}"
+{%- endif %}
+{% endmacro %}
+
+{# ── macro: emit a dict's entries (skipping a set of keys) ── #}
+{% macro emit_dict(d, indent, skip=[]) %}
+{% for k, v in d.items() %}
+{% if k not in skip %}
+{% if v is iterable and v is not string and v is not mapping and v | selectattr('items', 'defined') | list | length > 0 %}
+{{ ' ' * indent }}{{ k }}:
+{% for entry in v %}
+{{ ' ' * indent }}-
+{% for ek, ev in entry.items() %}
+{{ ' ' * (indent + 2) }}{{ ek }}: {{ yaml_value(ev) | trim }}
+{% endfor %}
+{% endfor %}
+{% elif v is iterable and v is not string and v is not mapping %}
+{{ ' ' * indent }}{{ k }}: {{ yaml_value(v) | trim }}
+{% else %}
+{{ ' ' * indent }}{{ k }}: {{ yaml_value(v) | trim }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endmacro %}
+
+{# ── Collect only services flagged for the homepage ── #}
+{% set hp_services = apps | selectattr('homepage') | list %}
+
+{# ── Build ordered unique group list preserving first-seen order ── #}
+{% set _seen_groups = [] %}
+{% set _ordered_groups = [] %}
+{% for svc in hp_services %}
+{%   if svc.group not in _seen_groups %}
+{%     set _ = _seen_groups.append(svc.group) %}
+{%     set _ = _ordered_groups.append(svc.group) %}
+{%   endif %}
 {% endfor %}
 
-{% for grp in homepage_groups %}
-- {{ grp.group }}:
-{% for svc in grp.services %}
-{% set port = _port_map[svc.id] | default(None) %}
-    - {{ svc.label }}:
-        href: http://{{ svc.id }}.{{ lab_domain }}
-        icon: {{ svc.icon | default('mdi-server') }}
-        description: {{ svc.description | default(svc.label) }}
-{% if port %}
-        ping: http://{{ lab_ip }}:{{ port }}
+{% for grp_name in _ordered_groups %}
+- "{{ grp_name }}":
+{% for svc in hp_services %}
+{% if svc.group == grp_name %}
+{% if svc.widget is mapping %}
+{% set svc_url = svc.widget.url | default('http://' ~ lab_ip ~ ':' ~ svc.port) %}
+{% else %}
+{% set svc_url = 'http://' ~ lab_ip ~ ':' ~ svc.port %}
+{% endif %}
+    - "{{ svc.label }}":
+        href: "{{ 'http://' ~ svc.name ~ '.' ~ lab_domain }}"
+        icon: "{{ svc.icon }}"
+        description: "{{ svc.description }}"
+        ping: "{{ svc_url }}"
+{% if svc.widget is mapping %}
         widget:
-          type: {{ svc.id }}
-          url: http://{{ lab_ip }}:{{ port }}
+          type: "{{ svc.widget.type }}"
+          url: "{{ svc_url }}"
+{{ emit_dict(svc.widget, 10, skip=['type', 'url']) }}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endfor %}

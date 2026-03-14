@@ -21,6 +21,6 @@
     ttl: 3600
     overwrite: true
     validate_certs: false
-  loop: "{{ lab_services }}"
+  loop: "{{ apps }}"
   loop_control:
     label: "{{ item.name }}.{{ lab_domain }} → {{ lab_ip }}"

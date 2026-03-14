@@ -1,0 +1,38 @@
+---
+- name: Validate that apps is defined and non-empty
+  ansible.builtin.fail:
+    msg: "apps must be defined and contain at least one entry"
+  when: apps is not defined or apps | length == 0
+
+- name: Validate that every apps entry has all required attributes
+  ansible.builtin.fail:
+    msg: >-
+      apps entry {{ idx }} ({{ item.name | default('UNNAMED') }})
+      is missing required attribute(s): {{ missing | join(', ') }}
+  when: missing | length > 0
+  loop: "{{ apps }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | default('UNNAMED') }}"
+  vars:
+    required_attrs:
+      - name
+      - port
+      - group
+      - label
+      - icon
+      - description
+      - homepage
+      - widget
+    missing: "{{ required_attrs | reject('in', item.keys() | list) | list }}"
+
+- name: Validate that widget entries contain a type when enabled
+  ansible.builtin.fail:
+    msg: >-
+      apps entry {{ idx }} ({{ item.name }}) has a widget dict
+      but is missing the required 'type' key
+  when: item.widget is mapping and 'type' not in item.widget
+  loop: "{{ apps }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | default('UNNAMED') }}"

@@ -33,3 +33,5 @@
       tags: [apps, pairdrop]
     - role: docker-homepage
       tags: [apps, homepage]
+    - role: docker-serr
+      tags: [apps, serr]

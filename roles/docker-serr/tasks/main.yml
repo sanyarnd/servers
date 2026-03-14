@@ -1,7 +1,4 @@
 ---
-- name: Validate apps entries
-  ansible.builtin.import_tasks: validate-services.yml
-
 - name: Set compose file path for this role
   ansible.builtin.set_fact:
     compose_src_path: "{{ role_path }}/files/compose.yml"
@@ -10,6 +7,3 @@
   ansible.builtin.include_role:
     name: docker-common
     tasks_from: deploy.yml
-
-- name: Copy configuration files
-  ansible.builtin.import_tasks: copy-config.yml
